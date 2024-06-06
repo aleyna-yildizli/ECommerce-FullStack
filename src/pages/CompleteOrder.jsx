@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getCityNames } from "turkey-neighbourhoods";
 import OrderSummary from "../components/shop/OrderSummary";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,18 +16,24 @@ import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToAddresses,
+  deleteAddress,
   fetchAddresses,
+  updateAddress,
 } from "../store/actions/ShoppingCard/shoppingCardAction";
 import { Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CompleteOrder() {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm();
 
   const [show, setShow] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [activeTab, setActiveTab] = useState("address");
   const [activeButton, setActiveButton] = useState("bireysel");
   const shoppingCart = useSelector((store) => store.shop.cart);
@@ -38,8 +44,29 @@ export default function CompleteOrder() {
     setSelectedAddress(address);
   };
 
+  const handleDelete = (id) => {
+    dispatch(deleteAddress(id));
+  };
+
+  const handleEditShow = (address) => {
+    setSelectedAddress(address);
+    setIsEdit(true);
+    setValue("title", address.title);
+    setValue("name", address.name);
+    setValue("surname", address.surname);
+    setValue("phone", address.phone);
+    setValue("city", address.city);
+    setValue("district", address.district);
+    setValue("neighborhood", address.neighborhood);
+    setValue("address", address.address);
+    setShow(true);
+  };
+
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setIsEdit(false);
+    setShow(true);
+  };
 
   const cities = getCityNames();
   const dispatch = useDispatch();
@@ -52,7 +79,7 @@ export default function CompleteOrder() {
     label: "Payment Options ",
     value: "payment",
   };
-  // Adres metnini belirli bir uzunluğa kadar kesmek ve "..." ile bitirmek
+
   const truncateAddress = (address, maxLength = 30) => {
     if (address.length > maxLength) {
       return address.slice(0, maxLength) + "...";
@@ -60,7 +87,6 @@ export default function CompleteOrder() {
     return address;
   };
 
-  // addressList dizisini map fonksiyonunu kullanarak ekranda listelemek
   const renderAddressList = () => {
     return addressList.map((address, index) => (
       <div key={index}>
@@ -75,14 +101,25 @@ export default function CompleteOrder() {
               />
               <span className="text-xs font-semibold"> {address.title}</span>
             </div>
-            <span className="text-xs text-slate-800 font-semibold underline">
-              Edit
-            </span>
+            <div className="flex gap-2">
+              <span
+                className="card-edit hover:text-red-600"
+                onClick={() => handleDelete(address.id)}
+              >
+                Delete
+              </span>
+              <span
+                className="card-edit hover:text-sky-600"
+                onClick={() => handleEditShow(address)}
+              >
+                Edit
+              </span>
+            </div>
           </div>
         </div>
         <div
           key={address.id}
-          className={`flex flex-col rounded p-4 mb-4 bg-gray-50 ${
+          className={`flex flex-col rounded p-4 mb-4 bg-gray-50 w-full ${
             selectedAddress && selectedAddress === address
               ? "selected-address bg-sky-50"
               : "border bg-gray-50"
@@ -119,25 +156,17 @@ export default function CompleteOrder() {
     ));
   };
 
-  // Alışveriş sepetindeki ürün sayısını hesapla
   const totalProductCount = shoppingCart.reduce(
     (total, item) => total + item.count,
     0
   );
 
-  const onSubmit = (newAddress) => {
-    const addressData = {
-      title: newAddress.title,
-      name: newAddress.name,
-      surname: newAddress.surname,
-      phone: newAddress.phone,
-      city: newAddress.city,
-      district: newAddress.district,
-      neighborhood: newAddress.neighborhood,
-      address: newAddress.address,
-    };
-    dispatch(addToAddresses(addressData));
-
+  const onSubmit = (addressData) => {
+    if (isEdit) {
+      dispatch(updateAddress(selectedAddress.id, addressData));
+    } else {
+      dispatch(addToAddresses(addressData));
+    }
     handleClose();
   };
 
@@ -147,6 +176,7 @@ export default function CompleteOrder() {
 
   return (
     <div className="flex flex-col">
+      <ToastContainer />
       <div className="bg-gray-100">
         <div className="flex justify-between items-center py-3 px-[10%]">
           <Link to="/" className="no-underline">
@@ -243,26 +273,26 @@ export default function CompleteOrder() {
               </div>
 
               <div className="flex justify-between">
-                <div className="p-4 mb-4 grid grid-cols-2 gap-x-8 gap-y-6">
-                  <div className="mb-4 rounded border justify-center bg-gray-50">
-                    <div className="flex justify-center items-center">
-                      <button
-                        className="flex flex-col justify-center items-center gap-2 mt-8 "
-                        onClick={handleShow}
-                      >
-                        <FontAwesomeIcon
-                          icon={faPlus}
-                          className="text-[20px] text-sky-500"
-                        />
-                        <span className="text-gray-600 font-semibold text-sm">
-                          Yeni Adres Ekle
-                        </span>
-                      </button>
-                    </div>
+                <div className="w-full p-4 mb-4 grid grid-cols-2 gap-x-8 gap-y-6">
+                  <div className="mb-4 rounded border bg-gray-50">
+                    <button
+                      className="flex flex-col justify-center items-center gap-2 mt-8 w-full text-center"
+                      onClick={handleShow}
+                    >
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        className="text-[20px] text-sky-500"
+                      />
+                      <span className="text-gray-600 font-semibold text-sm">
+                        Yeni Adres Ekle
+                      </span>
+                    </button>
 
                     <Modal show={show}>
                       <Modal.Body className="flex justify-between">
-                        <span className="text-lg">Adres Ekle</span>
+                        <span className="text-lg">
+                          {isEdit ? "Adres Güncelle" : "Adres Ekle"}
+                        </span>
                         <button onClick={handleClose}>
                           {" "}
                           <FontAwesomeIcon
@@ -523,7 +553,6 @@ export default function CompleteOrder() {
                               </button>
                             </div>
                           </div>
-                          {/* Kurumsal form */}
                           {activeButton === "kurumsal" && (
                             <div>
                               <div className="flex justify-start items-start ">

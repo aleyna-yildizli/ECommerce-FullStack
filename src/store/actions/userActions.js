@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 import { API } from '../../api/api.js'
 
-
 export const USER_LOGIN = 'USER_LOGIN';
 export const USER_LOGOUT = 'USER_LOGOUT';
 
@@ -22,29 +21,34 @@ export const loginUser = (userData, history) => (dispatch) => {
   return API
     .post('/login', userData)
     .then((response) => {
-      dispatch(userLogin(response.data));
-      localStorage.setItem("token", response.data.token);
-     
+      const user = response.data;
+      dispatch(userLogin(user));
+      localStorage.setItem("user", JSON.stringify(user));
       setTimeout(() => {
         history.push("/");
       }, 4000);
-     
       return response;
-      
     })
     .catch((error) => {
-      toast.error(error.response.data.message, {
-        position: "top-right",
-      });
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message, {
+          position: "top-right",
+        });
+      } else {
+        toast.error("An error occurred. Please try again later.", {
+          position: "top-right",
+        });
+      }
       throw error;
     });
 };
+
 
 //kullanıcı oturumunu sonlandırdığınızda Redux store'dan kullanıcı bilgilerini temizlemek için thunk action
 export const logoutUser = () => {
   return (dispatch) => {
     dispatch(userLogout());
-    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 };
 

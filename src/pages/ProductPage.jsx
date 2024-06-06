@@ -13,10 +13,10 @@ import { Carousel, CarouselItem, CarouselControl } from "reactstrap";
 import { useEffect, useState } from "react";
 import { data } from "../data/data";
 import { useParams } from "react-router";
-import ProductDetailCard from "../components/productPage/ProductDetailCard";
 import { API } from "../api/api";
 import { addToCart } from "../store/actions/ShoppingCard/shoppingCardAction";
 import { useDispatch } from "react-redux";
+import ProductDetailCard from "../components/productPage/ProductDetailCard";
 
 export default function ProductPage() {
   const { productCards } = data.productPageCards;
@@ -27,17 +27,6 @@ export default function ProductPage() {
   const addToCartHandle = () => {
     dispatch(addToCart(product));
   };
-
-  let transformedDescription = product.description;
-  if (transformedDescription) {
-    transformedDescription = transformedDescription
-      .replace(/%100\sPamuk/g, "100% Pamuk")
-      .replace(/Regular\/Normal\sKalıp/g, "Regular Kalıp")
-      .replace(/V\sYaka/g, "V Yaka")
-      .replace(/Uzun\sKollu/g, "Uzun Kollu")
-      .replace(/Örme\sT-Shirt/g, "Örme T-Shirt")
-      .replace(/\bTWOAW21TS0099\b/g, "");
-  }
 
   useEffect(() => {
     API.get(`/products/${id}`).then((res) => {
@@ -76,9 +65,9 @@ export default function ProductPage() {
         onExited={() => setAnimating(false)}
         key={index}
       >
-        {product.images && product.images.length > 0 && (
+        {product && product.image && (
           <img
-            src={product.images[0].url}
+            src={product.image}
             alt={name}
             className="w-full h-[500px] object-cover object-center" //object-contain ile sığdır.
           />
@@ -119,25 +108,14 @@ export default function ProductPage() {
               />
             </Carousel>
             <div className="flex gap-3">
-              {product.images &&
-                product.images.length > 0 &&
-                product.images.map((image, index) => (
-                  <React.Fragment key={index}>
-                    <img
-                      src={image.url}
-                      className={`w-28 h-24 object-contain hover:scale-105 hover:ease-out hover:duration-300 ease-out duration-300 ${
-                        activeIndex !== index && "opacity-50"
-                      }`}
-                      onClick={() => setActiveIndex(index)}
-                    />
-                    <img
-                      key={`${index}-opacity`}
-                      src={image.url}
-                      className="w-28 h-24 object-contain hover:scale-105 hover:ease-out hover:duration-300 ease-out duration-300 opacity-50"
-                      onClick={() => setActiveIndex(index)}
-                    />
-                  </React.Fragment>
-                ))}
+              <React.Fragment>
+                <img
+                  key={`-opacity`}
+                  src={product.image}
+                  className="w-28 h-24 object-contain hover:scale-105 hover:ease-out hover:duration-300 ease-out duration-300 opacity-50"
+                  onClick={() => setActiveIndex(index)}
+                />
+              </React.Fragment>
             </div>
           </div>
         </div>
@@ -189,7 +167,7 @@ export default function ProductPage() {
             </h6>
           </div>
           <p className="text-[#858585] w-[80%] sm:w-[60%] text-sm font-normal leading-tight tracking-tight">
-            {transformedDescription}
+            {product.description}
           </p>
           <div className="w-full border-t border-[#ECECEC] mb-3"></div>
           <div className="flex gap-2">

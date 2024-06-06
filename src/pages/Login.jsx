@@ -6,7 +6,7 @@ import {
   faEyeSlash,
   faEye,
 } from "@fortawesome/free-solid-svg-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -42,6 +42,7 @@ export default function Login() {
     setIsLoading(true);
     try {
       await dispatch(loginUser(data, history));
+      localStorage.setItem("user", data.email);
     } catch (error) {
       setIsLoading(false);
     }

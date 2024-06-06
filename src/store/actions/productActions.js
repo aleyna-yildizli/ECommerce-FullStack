@@ -1,4 +1,4 @@
-import { API } from '../../api/api';
+ import { API } from '../../api/api';
 
 
 export const SET_FETCH_STATE = 'SET_FETCH_STATE';
@@ -19,9 +19,9 @@ export const setFetchState = (fetchState) => ({
 });
 
 // Ürünleri getirme durumunda eylem oluşturucu
-export const setProducts = (productList, totalProductCount) => ({
+export const setProducts = (productList) => ({
   type: SET_PRODUCTS,
-  payload: { productList, totalProductCount },
+  payload: { productList },
 });
 
 // Daha fazla ürün getirme durumunda eylem oluşturucu
@@ -37,14 +37,12 @@ export const setActivePage = (pageNumber) => ({
 
 
 // Ürünleri getirmek için thunk actionı
-export const fetchProduct = (params) => {
+export const fetchProduct = () => {
   return (dispatch) => {
-    dispatch(setFetchState(FetchStates.FETCHING));
     API
-      .get("/products", { params })
+      .get("/products")
       .then((response) => {
-        //console.log("ürünler is coming", response.data.products);
-        dispatch(setProducts(response.data.products, response.data.total));
+        dispatch(setProducts(response.data, response.data.length));
       })
       .catch((error) => {
         console.log(error.message);

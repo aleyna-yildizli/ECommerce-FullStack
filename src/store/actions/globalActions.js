@@ -1,4 +1,5 @@
 // globalActions.js
+
 export const SET_ROLES = 'SET_ROLES';
 export const SET_CATEGORIES = 'SET_CATEGORIES';
 export const SET_THEME = 'SET_THEME';
@@ -7,7 +8,7 @@ export const SET_LANGUAGE = 'SET_LANGUAGE';
 import { API } from '../../api/api.js'
 
 
-// Kategorileri ayarlamak için eylem oluşturucu
+//Kategorileri ayarlamak için eylem oluşturucu
 export const setCategories = () => (dispatch) => {
     return API.get("/categories")
         .then((response) => {
@@ -16,7 +17,7 @@ export const setCategories = () => (dispatch) => {
         .catch((error) => {
             console.log(error.message);
         });
-};
+}; 
 
 
 // Rollerin alınması için özel thunk eylem oluşturucu
@@ -45,3 +46,4 @@ export const setTheme = (theme) => ({
 export const setLanguage = (language) => ({
     type: SET_LANGUAGE, payload: language
 });
+

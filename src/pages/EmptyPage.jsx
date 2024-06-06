@@ -4,11 +4,9 @@ import { Textarea, Button, IconButton } from "@material-tailwind/react";
 export default function EmptyPage() {
   return (
     <div className="flex flex-col justify-center items-center">
-      <div className="flex text-center text-[50px] font-bold  text-slate-800 -tracking-tight py-[70px]">
-        <p className="">
-          For All Your Needs, There's Only One Place:{" "}
-          <p className="text-pink-400">PiggyBank!</p>
-        </p>
+      <div className="flex flex-col justify-center text-center text-[50px] font-bold  text-slate-800 -tracking-tight py-[70px]">
+        <span> For All Your Needs, There's Only One Place: </span>
+        <span className="text-pink-400">PiggyBank!</span>
       </div>
       <div className="relative w-[32rem]">
         <Textarea

@@ -6,6 +6,7 @@ import { setRoles } from "../store/actions/globalActions";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { Spinner } from "@material-tailwind/react";
+import axios from "axios";
 
 export default function SignUpPage(props) {
   const {

@@ -2,7 +2,6 @@ import { SET_FETCH_STATE, SET_PRODUCTS, SET_MORE_PRODUCTS, SET_ACTIVE_PAGE, Fetc
 
 const productInitial = {
   productList: [],
-  totalProductCount: 0,
   pageCount: 0,
   activePage: 1,
   fetchState: FetchStates.NOT_FETCHED,
@@ -14,15 +13,12 @@ const productReducer = (state = productInitial, action) => {
       return {
         ...state,
         productList: action.payload.productList,
-        totalProductCount: action.payload.totalProductCount,
-        pageCount: Math.ceil(action.payload.totalProductCount / 12), // Assuming 25 products per page
         fetchState: FetchStates.FETCHED,
       };
     case SET_MORE_PRODUCTS:
       return {
         ...state,
         productList: [...state.productList, ...action.payload.productList], // Adding more products to existing list
-        totalProductCount: action.payload.totalProductCount,
         fetchState: FetchStates.FETCHED,
       };
     case SET_ACTIVE_PAGE:

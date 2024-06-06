@@ -1,15 +1,16 @@
 import axios from "axios";
 
-const BASE_URL = "https://workintech-fe-ecommerce.onrender.com";
+const BASE_URL = "http://localhost:9191/api/v1/ecommerce";
 
 export const createApiInstance = () => {
-    const token = localStorage.getItem("token");
-
     return axios.create({
-        baseURL: BASE_URL,
-        headers: token ? { Authorization: token } : {},
+      baseURL: BASE_URL,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      withCredentials: true // Kimlik doğrulama bilgilerini göndermek için
     });
-}
+  };
 
 
 let API = createApiInstance();

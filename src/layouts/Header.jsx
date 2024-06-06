@@ -32,7 +32,6 @@ import { useDispatch } from "react-redux";
 import { IoIosArrowForward } from "react-icons/io";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/solid";
 import slugify from "slugify";
-import { fetchProduct } from "../store/actions/productActions";
 import { Card, CardBody } from "reactstrap";
 import Modal from "react-bootstrap/Modal";
 
@@ -85,15 +84,8 @@ export default function Header({ direction, ...args }) {
 
   const handleLogout = () => {
     dispatch(userLogout());
-    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     sessionStorage.removeItem("isUserWelcomed");
-  };
-  const handleCategoryClick = (category) => {
-    const categoryId = category.id;
-    const genderSlug = category.gender === "e" ? "erkek" : "kadin";
-    const categorySlug = slugify(category.title, { lower: true });
-    dispatch(fetchProduct(categoryId, null, null));
-    history.push(`/shop/${categoryId}/${genderSlug}/${categorySlug}`);
   };
 
   return (
@@ -308,7 +300,7 @@ export default function Header({ direction, ...args }) {
                           <div className="flex flex-row gap-3 rounded-md justify-between">
                             <div className="flex basis-1/4 justify-center items-center">
                               <img
-                                src={item.product.images[0].url}
+                                src={item.product.image}
                                 className="object-cover w-[100px] h-[100px] rounded-lg"
                                 alt="product"
                               />

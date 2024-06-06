@@ -114,7 +114,7 @@ export default function ShoppingCart() {
                 <div key={index}>
                   <div className="flex gap-3">
                     <img
-                      src={product.images[0].url}
+                      src={product.image}
                       className="object-cover w-[170px] h-[170px]"
                       alt="product"
                     />

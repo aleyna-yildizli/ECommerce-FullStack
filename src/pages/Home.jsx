@@ -3,14 +3,12 @@ import HeroCarousel from "../components/home/HeroCarousel";
 import BottomCarousel from "../components/home/BottomCarousel";
 import ContainerFluid from "../components/home/ContainerFluid";
 import CategorySection from "../components/home/CategorySection";
-import ProductCard from "../components/global/ProductCard";
 import FeaturedCard from "../components/home/FeaturedCard";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/toastStyles.css";
-import { fetchProduct } from "../store/actions/productActions";
 
 export default function Home() {
   const { productCards } = data.global;
@@ -19,10 +17,6 @@ export default function Home() {
   const userData = useSelector((state) => state.user.userData);
   const dispatch = useDispatch();
   const productList = useSelector((state) => state.product.productList);
-
-  useEffect(() => {
-    dispatch(fetchProduct());
-  }, []);
 
   useEffect(() => {
     const isWelcomed = sessionStorage.getItem("isUserWelcomed");
@@ -58,16 +52,6 @@ export default function Home() {
               <p className="text-[14px] text-[#737373] text-center">
                 {bestSellersText.p}
               </p>
-            </div>
-            <div className="flex gap-[50px] flex-wrap items-center justify-center pb-[80px]">
-              {productList
-                .sort((a, b) => b.rating - a.rating)
-                .slice(0, 8)
-                .map((item, index) => (
-                  <div key={item.id} className="flex-grow-1 basis-[210px]">
-                    <ProductCard data={item} key={index} />
-                  </div>
-                ))}
             </div>
           </div>
         </section>
